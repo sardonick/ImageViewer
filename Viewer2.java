@@ -44,8 +44,6 @@ public class Viewer2 extends JFrame {
 	GraphicsDevice gd = getGraphicsConfiguration().getDevice();
 	screenWidth = gd.getDisplayMode().getWidth();
 	screenHeight = gd.getDisplayMode().getHeight();
-	System.out.println("Screen Width: " + screenWidth);
-	System.out.println("Screen Height: " + screenHeight);
 	
 	bmpImagePane = new ImagePane("Original Image", screenWidth, screenHeight);
 	jpgImagePane = new ImagePane("Converted Image", screenWidth, screenHeight);
@@ -65,6 +63,7 @@ public class Viewer2 extends JFrame {
 			String fName = c.getSelectedFile().getAbsolutePath();
 			bmpImagePane.setImage(fName);
 			jpgImagePane.setImage(fName);
+			matrixPane.enableButtons();
 			/* pack() is called before converting the image to jpeg,
 			 * because the image pane only sets the viewport size the 
 			 * when setImage is called with a filename as an argument.

@@ -85,6 +85,7 @@ public class JPEGStream {
 	chromaQTable = values;
     }
 
+    /*
     public void printQTable(int[] table) {
 	for(int i = 0; i < 8; i++) {
 	    for (int j = 0; j < 8; j++) {
@@ -93,6 +94,7 @@ public class JPEGStream {
 	    System.out.print("\n");
 	}
     }
+    */
 
     /*
      * Transforms the table argument from conventional

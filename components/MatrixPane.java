@@ -39,6 +39,12 @@ public class MatrixPane extends JPanel {
 	chromaMatrix.update(JPEGStream.defaultChromaQTable);	
     }
 
+    public void enableButtons() {
+	defaultButton.setEnabled(true);
+	constantButton.setEnabled(true);
+	dcButton.setEnabled(true);
+    }
+
 
     public MatrixPane(String title, ImagePane ip, JFrame v) {
 	this.title = new JLabel(title);
@@ -56,6 +62,7 @@ public class MatrixPane extends JPanel {
 		    v.repaint();
 		}
 	    });
+	defaultButton.setEnabled(false);
 	// Create constant button
 	constantButton = new JButton("Constant");
 	constantButton.addActionListener(new ActionListener() {
@@ -69,6 +76,7 @@ public class MatrixPane extends JPanel {
 		    v.repaint();
 		}
 	    });
+	constantButton.setEnabled(false);
 	// Create dc only button
 	dcButton = new JButton("DC only");
 	dcButton.addActionListener(new ActionListener() {
@@ -80,6 +88,7 @@ public class MatrixPane extends JPanel {
 		    v.repaint();
 		}
 	    });
+	dcButton.setEnabled(false);
 
 	// Create Button Panel
 	buttonPanel = new JPanel();

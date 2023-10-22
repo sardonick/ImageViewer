@@ -63,6 +63,7 @@ public class ImagePane extends JPanel {
 	this.title = new JLabel(title);
 	this.title.setAlignmentX(Component.RIGHT_ALIGNMENT);
 	this.maxWidth = (int) (screenWidth * 0.4);
+	//	this.maxHeight = (int) (screenHeight * 0.8);
 	this.maxHeight = screenHeight;
 	// Initialize an interpolation object, which will be used for zoomIn
 	// and zoomOut operations.
@@ -157,9 +158,8 @@ public class ImagePane extends JPanel {
 	    firstImage = false;
 	    image = img;
 	    // Set the first image.
-	    scrollPane.setViewportView(new ImageCanvas(img.getAsBufferedImage(), maxWidth, maxHeight));
-	    //	    pack();
-	    //	    repaint();	    
+	    scrollPane.setViewportView(new ImageCanvas
+				       (img.getAsBufferedImage(), maxWidth, (int) (0.8 * maxHeight)));
 	} else { // If this is not the first image, then we keep the window size
 	         // constant by calling setImage.
 	    setImage(img);
@@ -193,6 +193,7 @@ public class ImagePane extends JPanel {
 	setImage(jStream.getImage());
     }
 
+    /*
     public void printQTable(int[] table) {
 	for(int i = 0; i < 8; i++) {
 	    for (int j = 0; j < 8; j++) {
@@ -201,15 +202,9 @@ public class ImagePane extends JPanel {
 	    System.out.print("\n");
 	}
     }
+    */
 
     public void reloadJPEG() {
-
-	System.out.println("Luma table");
-	printQTable(lumaQTable);
-	System.out.println("Chroma table");
-	printQTable(chromaQTable);
-
-	//	makeJPEG();
 	if (image == null) {
 	    System.out.println("Tried to convert null image to JPEG.");
 	    System.exit(1);

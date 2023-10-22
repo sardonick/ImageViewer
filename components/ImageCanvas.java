@@ -97,7 +97,11 @@ public class ImageCanvas extends JLabel
 	}
 	return new Dimension(maxWidth, maxHeight);
 	
-    }    
+    }
+
+    public Dimension getMaximumSize() {
+	return getPreferredSize();
+    }
     
     public Dimension getPreferredScrollableViewportSize() {
 	return getPreferredSize();
