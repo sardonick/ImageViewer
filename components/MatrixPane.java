@@ -14,7 +14,6 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 
 public class MatrixPane extends JPanel {
     
@@ -58,8 +57,8 @@ public class MatrixPane extends JPanel {
 		public void actionPerformed(ActionEvent e) {
 		    resetQTables();
 		    jpgImagePane.reloadJPEG();
-		    v.pack();
-		    v.repaint();
+		    //		    v.pack();
+		    //		    v.repaint();
 		}
 	    });
 	defaultButton.setEnabled(false);
@@ -70,10 +69,10 @@ public class MatrixPane extends JPanel {
 		    lumaMatrix.makeConstant();
 		    chromaMatrix.makeConstant();
 		    jpgImagePane.reloadJPEG();
-		    jpgImagePane.validate();
-		    jpgImagePane.repaint();
-		    v.pack();
-		    v.repaint();
+		    //		    jpgImagePane.validate();
+		    //		    //		    jpgImagePane.repaint();
+		    //		    v.pack();
+		    //		    v.repaint();
 		}
 	    });
 	constantButton.setEnabled(false);
@@ -84,8 +83,8 @@ public class MatrixPane extends JPanel {
 		    lumaMatrix.makeDC();
 		    chromaMatrix.makeDC();
 		    jpgImagePane.reloadJPEG();
-		    v.pack();
-		    v.repaint();
+		    //		    v.pack();
+		    //		    v.repaint();
 		}
 	    });
 	dcButton.setEnabled(false);
@@ -100,8 +99,8 @@ public class MatrixPane extends JPanel {
 	setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 	add(this.title);
 	// TODO Add the matrices
-	lumaMatrix = new Matrix("Luminance:");
-	chromaMatrix = new Matrix("Chrominance:");
+	lumaMatrix = new Matrix("Luminance:", jpgImagePane);
+	chromaMatrix = new Matrix("Chrominance:", jpgImagePane);
 
 	//resetQTables();
 		

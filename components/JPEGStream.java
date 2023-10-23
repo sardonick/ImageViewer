@@ -185,6 +185,7 @@ public class JPEGStream {
     }
 
     public void writeImage(File file) {
+	System.out.println(file.getName());
 	try{
 	    // methood inherited from ByteArrayOutputStream
 	    bOutputStream.writeTo(new FileOutputStream(file));

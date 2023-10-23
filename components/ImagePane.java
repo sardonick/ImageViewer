@@ -22,6 +22,7 @@ import javax.media.jai.JAI;
 import javax.media.jai.RenderedOp;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -46,6 +47,7 @@ public class ImagePane extends JPanel {
     private int[] chromaQTable;
     private int maxWidth;
     private int maxHeight;
+    private JFrame v;
 
     public Dimension getMaximumSize() {
 	return new Dimension(maxWidth, maxHeight);
@@ -59,12 +61,13 @@ public class ImagePane extends JPanel {
 	chromaQTable = table;
     }
 
-    public ImagePane(String title, int screenWidth, int screenHeight) {
+    public ImagePane(String title, int screenWidth, int screenHeight, JFrame v) {
 	this.title = new JLabel(title);
 	this.title.setAlignmentX(Component.RIGHT_ALIGNMENT);
 	this.maxWidth = (int) (screenWidth * 0.4);
 	//	this.maxHeight = (int) (screenHeight * 0.8);
 	this.maxHeight = screenHeight;
+	this.v = v;
 	// Initialize an interpolation object, which will be used for zoomIn
 	// and zoomOut operations.
 	interp = Interpolation.getInstance(Interpolation.INTERP_BILINEAR);
@@ -213,6 +216,7 @@ public class ImagePane extends JPanel {
 	jStream = new JPEGStream();
 	jStream.encode(imageOriginal, JPEGStream.zigZag(lumaQTable), JPEGStream.zigZag(chromaQTable));
 	setImage(jStream.getImage());
-	//	repaint();
+	v.pack();
+	v.repaint();
     }
 }

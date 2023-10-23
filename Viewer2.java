@@ -45,8 +45,8 @@ public class Viewer2 extends JFrame {
 	screenWidth = gd.getDisplayMode().getWidth();
 	screenHeight = gd.getDisplayMode().getHeight();
 	
-	bmpImagePane = new ImagePane("Original Image", screenWidth, screenHeight);
-	jpgImagePane = new ImagePane("Converted Image", screenWidth, screenHeight);
+	bmpImagePane = new ImagePane("Original Image", screenWidth, screenHeight, this);
+	jpgImagePane = new ImagePane("Converted Image", screenWidth, screenHeight, this);
 	// Create the menu.
 	menu = new JMenu("Menu");
 
@@ -97,8 +97,13 @@ public class Viewer2 extends JFrame {
 		    c.setFileFilter(filter);
 		    if (c.showSaveDialog(saveMenuItem) == JFileChooser.APPROVE_OPTION) {
 			File file = c.getSelectedFile();
-			// Save the JPEG to the file.
-			jpgImagePane.jStream.writeImage(file);
+			String name = file.getName();
+			if (!(name.endsWith("jpg") || name.endsWith("jpeg"))) {
+			    jpgImagePane.jStream.writeImage(new File(file.getAbsolutePath() + ".jpg"));
+
+			} else {
+			    jpgImagePane.jStream.writeImage(file);
+			}
 		    }
 			
 		}

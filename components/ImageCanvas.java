@@ -89,6 +89,8 @@ public class ImageCanvas extends JLabel
      *  Scrollable Interface
      */
     public Dimension getPreferredSize() {
+	return new Dimension(image.getWidth(), image.getHeight());
+	/*
 	int w = image.getWidth();
 	int h = image.getHeight();
 	if (w <= maxWidth && h <= maxHeight) {
@@ -96,15 +98,17 @@ public class ImageCanvas extends JLabel
 	    return new Dimension(image.getWidth(), image.getHeight());		
 	}
 	return new Dimension(maxWidth, maxHeight);
-	
+	*/
     }
 
     public Dimension getMaximumSize() {
-	return getPreferredSize();
+	return new Dimension(maxWidth, maxHeight);	
+	//	return getPreferredSize();
     }
     
     public Dimension getPreferredScrollableViewportSize() {
-	return getPreferredSize();
+	return getMaximumSize();
+	//	return getPreferredSize();
     }
 
     /*

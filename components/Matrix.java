@@ -9,6 +9,7 @@ import java.awt.Component;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.BoxLayout;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -17,6 +18,7 @@ public class Matrix extends JPanel {
     private JPanel[] rows;
     private JLabel title;
     private int[] matrix;
+    private ImagePane ip;
 
     public int[] getMatrix() {
 	return matrix;
@@ -45,10 +47,11 @@ public class Matrix extends JPanel {
     }
 
     // Constructor for creating an empty matrix
-    public Matrix(String title) {
+    public Matrix(String title, ImagePane ip) {
 	matrix = new int[64];
 	setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 	this.title = new JLabel(title);
+	this.ip = ip;
 	this.title.setAlignmentX(Component.LEFT_ALIGNMENT);
 	add(this.title);
 	rows = new JPanel[8];
@@ -75,9 +78,19 @@ public class Matrix extends JPanel {
 		final int index = 8 * i + j;
 		tf.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-			    String inp = tf.getText();
-			    matrix[index] = Integer.parseInt(inp);
+			    int currentValue = matrix[index];
+			    int input = 0;
+			    try {
+				input = Integer.parseInt(tf.getText());
+			    } catch (NumberFormatException exc) {}
+			    if ((input > 0) && (input < 257)) {
+				matrix[index] = input;
+			    } else {
+				matrix[index] = currentValue;
+				tf.setText(String.valueOf(currentValue));
+			    }
 			    //TODO call a function to re-encode the image
+			    ip.reloadJPEG();
 			}
 		    });
 		rows[i].add(tf);
