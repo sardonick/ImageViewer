@@ -3,7 +3,7 @@
  * COMP435 - Multimedia Technologies
  * Nicholas O'Leary
  * 3466559
- * Assignment 1
+ * Assignment 2
  * File: ImageCanvas.java
  * Description: 
  *     A subclass of JLabel which displays a buffered image.
@@ -28,20 +28,23 @@ import javax.swing.Scrollable;
  *
  * attributes:
  * image                                          BufferedImage that holds the image to be displayed. 
+ * maxWidth                                       An integer value for the max size this component can take on.
+ * maxHeight                                      An integer value for the max size this component can take on.
  *
  * methods:
  * ImageCanvas()                                  Default constructor.
- * ImageCanvas(BufferedImage)                     Constructor which intializes the image.
+ * ImageCanvas(BufferedImage, int, int)           Constructor which intializes the image.
  * paint(Graphics)                                Redefine the paint method in order to draw the BufferedImage.
  * setImage(BufferedImage)                        Change the image.
  * mouseMoved(MouseEvent)                         Needed for the MouseMotionListener interface.
  * mouseDragged(MouseEvent)                       Needed for the MouseMotionListener interface.
  * getPreferredSize()                             Needed for the Scrollable interface.
+ * getMaximumSize()                               Returns the maximum dimensions for the component.
  * getPreferredScrollableViewportSize()           Needed for the Scrollable interface.
  * getScrollableUnitIncrement(Rectangle,int,int)  Needed for the Scrollable interface.
  * getScrollableBlockIncrement(Rectangle,int,int) Needed for the Scrollable interface.
  * getScrollableTracksViewportWidth()             Needed for the Scrollable interface.
- * getScrollableTracksViewportHeight()           Needed for the Scrollable interface.
+ * getScrollableTracksViewportHeight()            Needed for the Scrollable interface.
  */
 public class ImageCanvas extends JLabel
     implements Scrollable, MouseMotionListener{
@@ -54,12 +57,6 @@ public class ImageCanvas extends JLabel
 	this.image = null;
     }
     
-    public ImageCanvas(BufferedImage i) {
-	this.image = i;
-	setAutoscrolls(true);
-	addMouseMotionListener(this);
-    }
-
     public ImageCanvas(BufferedImage i, int maxWidth, int maxHeight) {
 	this.image = i;
 	setAutoscrolls(true);
@@ -90,25 +87,14 @@ public class ImageCanvas extends JLabel
      */
     public Dimension getPreferredSize() {
 	return new Dimension(image.getWidth(), image.getHeight());
-	/*
-	int w = image.getWidth();
-	int h = image.getHeight();
-	if (w <= maxWidth && h <= maxHeight) {
-	    // Return the image size.
-	    return new Dimension(image.getWidth(), image.getHeight());		
-	}
-	return new Dimension(maxWidth, maxHeight);
-	*/
     }
 
     public Dimension getMaximumSize() {
 	return new Dimension(maxWidth, maxHeight);	
-	//	return getPreferredSize();
     }
     
     public Dimension getPreferredScrollableViewportSize() {
 	return getMaximumSize();
-	//	return getPreferredSize();
     }
 
     /*

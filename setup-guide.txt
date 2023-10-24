@@ -1,0 +1,18 @@
+This program was developed on Windows using Java version 1.8.0_202 and JAI version 1.1.3.
+
+To run this project ensure that JAI is installed on your system and the CLASSPATH environment
+variable contains the paths to:
+	Sun MicroSystems\Java Advanced Imaging 1.1.3\lib\jai_codec.jar
+	Sun MicroSystems\Java Advanced Imaging 1.1.3\lib\jai_core.jar
+	Sun MicroSystems\Java Advanced Imaging 1.1.3\lib\mlib_wrapper.jar
+
+To compile the entire project run the make.bat file from the ``assignment-2'' directory.
+Then you can start the program by executing the run.bat file.
+
+e.g.
+>cd assignment-2
+>make
+>run
+
+
+

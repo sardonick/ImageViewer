@@ -1,5 +1,22 @@
- /*
- * updated and adapted viewer
+/*
+ * Athabasca University
+ * COMP435 - Multimedia Technologies
+ * Nicholas O'Leary
+ * 3466559
+ * Assignment 2
+ * File: Viewer2.java
+ * Description: 
+ *     An application which reads a bitmap file, converts it to a jpeg
+ *     and displays both images side by side. Quantization tables for
+ *     luminance and chrominance are displayed and can be manipulated
+ *     by the user to alter the image output by the JPEG compression *    
+ *
+ * Based on: TopLevelDemo.java 
+ * https://docs.oracle.com/javase/tutorial/displayCode.html?code=https://docs.oracle.com/javase/tutorial/uiswing/examples/components/TopLevelDemoProject/src/components/TopLevelDemo.java
+ *           MenuLookDemo.java
+ * https://docs.oracle.com/javase/tutorial/uiswing/examples/components/MenuLookDemoProject/src/components/MenuLookDemo.java
+ *        JAISampleProgram.java
+ * An example from the JAI Programming guide: ``Programming in Java Advanced Imaging''
  */
 
 import components.ImagePane;
@@ -20,7 +37,31 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+/*
+ * CLASS Viewer2
+ *
+ * An extended JFrame which represents the application window.
+ * 
+ * attributes: 
+ *
+ * bmpImagePane           An ImagePane which manages the manipulation and display of the bitmap.
+ * jpgImagePane           An ImagePane which manages the manipulation and display of the jpeg.
+ * matrixPane             A MatrixPane which manages the quantization tables and their associated buttons.
+ * componentPanel         A JPanel which groups the three panes together in a row.
+ * menuBar                JMenuBar which consists of the menu and three buttons.
+ * menu                   JMenu which consists of file and exit options.
+ * fileMenuItem           Initiates a file open dialog to choose an image.
+ * exitMenuItem           Exits the application.
+ * saveMenuItem           Initiates a save file dialog to save the current jpeg.
+ * screenWidth            An integer which stores the display screen width.
+ * screenHeight           An integer which stores the display screen height.
 
+ * methods:
+ * getMaximumSize()       Returns the screen width and height.
+ * Viewer2(string)        Constructor, initializes application components.
+ * createAndShowGUI()     Method passed to swing dispatcher, instantiates and configures application.
+ * main(String[])         Starts the application.
+ */
 public class Viewer2 extends JFrame {
     
     private ImagePane bmpImagePane;
@@ -44,9 +85,13 @@ public class Viewer2 extends JFrame {
 	GraphicsDevice gd = getGraphicsConfiguration().getDevice();
 	screenWidth = gd.getDisplayMode().getWidth();
 	screenHeight = gd.getDisplayMode().getHeight();
-	
+
+	/* Screen height and width, and a reference to this JFrame are passed to the image
+	 * panes so that the maximum size of the viewports can be set, and so that the image
+	 * panes can call pack, and repaint on the JFrame. */ 
 	bmpImagePane = new ImagePane("Original Image", screenWidth, screenHeight, this);
 	jpgImagePane = new ImagePane("Converted Image", screenWidth, screenHeight, this);
+	
 	// Create the menu.
 	menu = new JMenu("Menu");
 
@@ -63,14 +108,18 @@ public class Viewer2 extends JFrame {
 			String fName = c.getSelectedFile().getAbsolutePath();
 			bmpImagePane.setImage(fName);
 			jpgImagePane.setImage(fName);
+			/* Matrix pane buttons are disables on start up since there is
+			 * no image data to manipulate. */
 			matrixPane.enableButtons();
 			/* pack() is called before converting the image to jpeg,
 			 * because the image pane only sets the viewport size the 
-			 * when setImage is called with a filename as an argument.
+			 * when setImage is called with a filename as an argument,
+			 * in order to prevent the window from resizing when the image is 
+			 * replaced during a zoom operation.
 			 * If the call to pack() is omitted than the viewport will 
 			 * not have the right size as makeJPEG calls setImage with
-			 * a rendered op argument and does the viewport size does
-			 * not get configured correctly.			 */
+			 * a rendered op argument and the viewport size does
+			 * not get configured correctly. */
 			pack();
 			jpgImagePane.makeJPEG();			
 			pack();
@@ -97,6 +146,8 @@ public class Viewer2 extends JFrame {
 		    c.setFileFilter(filter);
 		    if (c.showSaveDialog(saveMenuItem) == JFileChooser.APPROVE_OPTION) {
 			File file = c.getSelectedFile();
+			/* If the user did not add the proper file extension, it is 
+			 * added here.*/
 			String name = file.getName();
 			if (!(name.endsWith("jpg") || name.endsWith("jpeg"))) {
 			    jpgImagePane.jStream.writeImage(new File(file.getAbsolutePath() + ".jpg"));
@@ -104,10 +155,9 @@ public class Viewer2 extends JFrame {
 			} else {
 			    jpgImagePane.jStream.writeImage(file);
 			}
-		    }
-			
+		    }			
 		}
-	    }); // actionlistener
+	    });
 
 	// Add the menu items to the menu.
 	menu.add(fileMenuItem);
@@ -123,19 +173,20 @@ public class Viewer2 extends JFrame {
 	menuBar.add(menu);
 	setJMenuBar(menuBar);
 
-	// Create the matrix pane
+	/* Create the matrix pane, it needs references to the jpeg image pane
+	 * and the JFrame to be able to call reloadJPEG, and pack/repaint.*/
 	matrixPane = new MatrixPane("Quantization Matrix", jpgImagePane, this);
+	// Set up the references for quantization tables in the jpeg image pane.
 	jpgImagePane.setLumaQTable(matrixPane.lumaMatrix.getMatrix());
 	jpgImagePane.setChromaQTable(matrixPane.chromaMatrix.getMatrix());
-	
 
+	// Create a JPanel to arrange the three panes.
 	componentPanel = new JPanel();
 	componentPanel.setLayout(new BoxLayout(componentPanel, BoxLayout.X_AXIS));
 	componentPanel.add(bmpImagePane);
 	componentPanel.add(jpgImagePane);
 	componentPanel.add(matrixPane);
 	add(componentPanel);
-
     }
 
     private static void createAndShowGUI() {

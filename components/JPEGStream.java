@@ -1,13 +1,17 @@
 /*
- * A class that converts a bitmap image into a jpeg.
+ * Athabasca University
+ * COMP435 - Multimedia Technologies
+ * Nicholas O'Leary
+ * 3466559
+ * Assignment 2
+ * File: JPEGStream.java
+ * Description: 
+ *      A class that converts a bitmap image into a jpeg, provides
+ *      constant definitions for the default quantization tables, and 
+ *      a method for writing a JPEG file to disk.
  *
  * Based on: ``JPEGWriterTest.java'' from Programming in Java Advanced Imaging
  */
-
-// 1. Take a rendered image and encode it into a stream
-// 2. Create a new buffered/rendered image from the jpeg encoded stream
-// ^^ use the ``stream'' op
-// 3. optionally write the stream to a file.
 
 package components;
 
@@ -22,7 +26,31 @@ import java.io.IOException;
 import javax.media.jai.JAI;
 import javax.media.jai.PlanarImage;
 import javax.media.jai.RenderedOp;
-
+/*
+ * CLASS JPEGStream
+ *
+ * attributes
+ * defaultLumaQTable     A constant array of ints which is the canonical source of the default 
+ *                       luminance quantization table for the application.
+ * defaultChromaQTable   A constant array of ints which is the canonical source of the default 
+ *                       chrominance quantization table for the application.
+ * encodeParam           A JPEGEncodeParam object used to control the encoding done by JAI.
+ * bOutputStream         A ByteArrayOutputStream where the encoder writes the encoded image data.
+ * bStream               A ByteArraySeekableStream which inputs the encoded image data to JAI.create
+ *                       in order to obtain a planar image/ rendered op of the JPEG image.
+ * lumaQTable            The luminance quantization table used for encoding.
+ * chromaQTable          The chrominance quantization table used for encoding.
+ * 
+ * methods
+ * zigZag(int[])                      A static method for transforming a quantization table into zig-zag order.
+ * encode(PlanarImage, int[], int[])  Encodes the PlanarImage as a JPEG using the quantization table arguments.
+ *                                    The resulting stream is stored in bOutputStream.
+ * JPEGStream()                       Default constructor.
+ * JPEGStream(PlanarImage)            Constructor which calls encode with the default quantization table values.
+ * getImage()                         Returns a RenderedOp created from the JPEG data using bStream.
+ * writeImage(File)                   Writes the JPEG data stored in bOutputStream to a file.
+ *
+ */
 public class JPEGStream {
     /* The JAI image encoder expects these arrays to be 
      * in zig-zag order. This is how the arrays would
@@ -53,49 +81,6 @@ public class JPEGStream {
     private ByteArrayOutputStream bOutputStream;
     private ByteArraySeekableStream bStream;
 
-    // Initialize this with the default values from table 9.1
-    private int[] lumaQTable = {
-	16,  11,  10,  16,  24,  40,  51,  61,
-	12,  12,  14,  19,  26,  58,  60,  55,
-	14,  13,  16,  24,  40,  57,  69,  56,
-	14,  17,  22,  29,  51,  87,  80,  62,
-	18,  22,  37,  56,  68, 109, 103,  77,
-	24,  35,  55,  64,  81, 104, 113,  92,
-	49,  64,  78,  87, 103, 121, 120,  101,
-	72,  92,  95,  98, 112, 100, 103,   99
-    };
-
-    // Initialize this with the default values from table 9.2
-    private int[] chromaQTable  = {
-	17,  18,  24,  47,  99,  99,  99,  99,
-	18,  21,  26,  66,  99,  99,  99,  99,
-	24,  26,  56,  99,  99,  99,  99,  99,
-	47,  66,  99,  99,  99,  99,  99,  99,
-	99,  99,  99,  99,  99,  99,  99,  99,
-	99,  99,  99,  99,  99,  99,  99,  99,
-	99,  99,  99,  99,  99,  99,  99,  99,
-	99,  99,  99,  99,  99,  99,  99,  99,
-    };
-    //REMOVE later, want encode to automatically update the tables.
-    public void setLumaQTable(int[] values) {
-	lumaQTable = values;
-    }
-    // ditto REMOVE
-    public void setChromaQTable(int[] values) {
-	chromaQTable = values;
-    }
-
-    /*
-    public void printQTable(int[] table) {
-	for(int i = 0; i < 8; i++) {
-	    for (int j = 0; j < 8; j++) {
-		System.out.print(table[8*i+j] + " ");
-	    }
-	    System.out.print("\n");
-	}
-    }
-    */
-
     /*
      * Transforms the table argument from conventional
      * order to zig zag order for the image encoder.
@@ -121,15 +106,9 @@ public class JPEGStream {
 
 
     public void encode(PlanarImage img, int[] lumaQT, int[] chromaQT) {
-	/*
-	setLumaQTable(lumaQT);
-	setChromaQTable(chromaQT);
-	*/
-	lumaQTable = lumaQT;
-	chromaQTable = chromaQT;
 	encodeParam = new JPEGEncodeParam();
-	encodeParam.setLumaQTable(zigZag(lumaQTable));
-	encodeParam.setChromaQTable(zigZag(chromaQTable));
+	encodeParam.setLumaQTable(zigZag(lumaQT));
+	encodeParam.setChromaQTable(zigZag(chromaQT));
 
 	if (!encodeParam.isQTableSet(0)) {
 	    System.out.println("encode param lumaninace Q table is not set.");
@@ -139,17 +118,11 @@ public class JPEGStream {
 	    System.out.println("encode param chrominance Q table is not set.");
 	    System.exit(1);
 	}
-	/*
-	System.out.println("Luma table");
-	printQTable(encodeParam.getQTable(0));
-	System.out.println("Chroma table");
-	printQTable(encodeParam.getQTable(1));
-	*/
+	
 	bOutputStream = new ByteArrayOutputStream();
 	ImageEncoder enc = ImageCodec.createImageEncoder("JPEG", bOutputStream, encodeParam);
 	try {
 	    enc.encode(img);
-	    // protected byte[] buf inherited from ByteArrayOutputStream
 	    bStream = new ByteArraySeekableStream(bOutputStream.toByteArray());	    
 	} catch(IOException e) {
 	    System.out.println("IOException in JPEGStream");
@@ -161,22 +134,7 @@ public class JPEGStream {
     }
     
     public JPEGStream(PlanarImage img) {
-	encode(img, lumaQTable, chromaQTable);
-	/*
-	// set up the encodeParam variable;
-	encodeParam = new JPEGEncodeParam();
-	encodeParam.setLumaQTable(lumaQTable);
-	encodeParam.setChromaQTable(chromaQTable);
-	ImageEncoder enc = ImageCodec.createImageEncoder("JPEG", this, encodeParam);
-	try {
-	    enc.encode(img);
-	    // protected byte[] bug inherited from ByteArrayOutputStream}
-	    bStream = new ByteArraySeekableStream(buf);	    
-	} catch(IOException e) {
-	    System.out.println("IOException in ToJpeg");
-	    System.exit(1);
-	}
-	*/
+	encode(img, defaultLumaQTable, defaultChromaQTable);
     }    
     
     public RenderedOp getImage() {
@@ -185,24 +143,11 @@ public class JPEGStream {
     }
 
     public void writeImage(File file) {
-	System.out.println(file.getName());
 	try{
-	    // methood inherited from ByteArrayOutputStream
 	    bOutputStream.writeTo(new FileOutputStream(file));
 	} catch(IOException e) {
 	    System.out.println("Problem creating JPEG");
 	    System.exit(1);
 	}
     }
-    /*    
-    public static void main(String[] args) {
-	// Test encode
-	PlanarImage img = JAI.create("fileload", "flower.bmp");
-	JPEGStream tj = new JPEGStream(img);
-	// Test getImage
-	RenderedOp ro = tj.getImage();
-	// test writeImage
-	tj.writeImage("flower.jpg");
-    }
-    */
 }
